@@ -35,17 +35,13 @@ public class CommandListener extends ListenerAdapter {
             String nome = args[0];
             String link = args[1];
 
-            if(Meme.insertImageLink(link, nome)){
+            if(Image.insertImageLink(link, nome)){
                 event.getChannel().sendMessage("✅ **Meme adicionado!**\n📌 Nome: `" + nome + "`\n🖼️ Link: " + link).queue();
             }else {
                 event.getChannel().sendMessage("Erro ao enviar ao SQL").queue();
             }
 
-
             //adicinar metodo de inserir descrição depois
-//            Meme.insertImageLink(message.substring("!add".length()), null);
-//            event.getChannel().sendMessage("Meme recebido").queue();
-
 
         }
 
@@ -57,7 +53,7 @@ public class CommandListener extends ListenerAdapter {
         //Comando de julgar a mensagem
         if (message.equalsIgnoreCase("!judge")) {
                 embedBuilder.setTitle("CULPADO!⚖️");
-                embedBuilder.setImage(Meme.getRandomMeme());
+                embedBuilder.setImage(Image.getRandomMeme());
                 embedBuilder.setColor(Color.DARK_GRAY);
                 event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
 

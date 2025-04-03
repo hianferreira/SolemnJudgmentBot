@@ -2,9 +2,16 @@ package dev.suki;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class Meme {
+
+public class Image {
+    private String linkImageMemes;
+    private String descriptionImageMemes;
+
     public static boolean insertImageLink(String url, String description){
         String sql = "INSERT INTO memes (link_image, description_image) VALUES (?, ?)";
         try (Connection conn = DataBaseConnection.getConnection();
@@ -28,7 +35,7 @@ public class Meme {
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()){
             if (rs.next()){
-                return rs.getString("Link");
+                return rs.getString("link_image");
             }
         } catch (SQLException e){
             e.printStackTrace();
