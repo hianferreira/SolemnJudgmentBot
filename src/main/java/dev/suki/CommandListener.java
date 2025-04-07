@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import java.util.regex.*;
 
 
 import java.awt.Color;
@@ -12,8 +13,6 @@ import java.awt.Color;
 public class CommandListener extends ListenerAdapter {
 
     EmbedBuilder embedBuilder = new EmbedBuilder();
-
-    private String meme1 = "https://i.redd.it/jk0rf2e2bgud1.jpeg";
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -24,21 +23,32 @@ public class CommandListener extends ListenerAdapter {
 
         if (message.toLowerCase().startsWith("!add")){
 
-            String[] args = message.substring(5).split(" ", 2);
+            String regex = "https?://[^\\s\"']+\\.(jpg|jpeg|png|gif|webp)";
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
-            if (args.length < 2){
+            String[] args = message.substring(5).split(" ", 2);
+            String nome = args[0];
+            String link = args[1];
+
+            Matcher matcher = pattern.matcher(link);
+
+            if (matcher.matches() != true){
+                event.getChannel().sendMessage("❌ **Erro:** Você precisa fornecer um link de imagem valido\n" +
+                        "Exemplo: https://img.com/meme.jpg").queue();
+                return;
+            }
+
+            if (args.length != 2){
                 event.getChannel().sendMessage("❌ **Erro:** Você precisa fornecer um nome e um link!\n"
                         + "Exemplo: `!add memelegal https://img.com/meme.jpg`").queue();
                 return;
             }
 
-            String nome = args[0];
-            String link = args[1];
 
-            if(Image.insertImageLink(link, nome)){
+            if(Image.insertImageLink(link, nome) && matcher.matches()){
                 event.getChannel().sendMessage("✅ **Meme adicionado!**\n📌 Nome: `" + nome + "`\n🖼️ Link: " + link).queue();
             }else {
-                event.getChannel().sendMessage("Erro ao enviar ao SQL").queue();
+                event.getChannel().sendMessage("Erro ao enviar sua imagem").queue();
             }
 
             //adicinar metodo de inserir descrição depois
@@ -50,10 +60,11 @@ public class CommandListener extends ListenerAdapter {
         if (message.equalsIgnoreCase("!ping")) {
             event.getChannel().sendMessage("Pong!").queue();
         }
+
         //Comando de julgar a mensagem
         if (message.equalsIgnoreCase("!judge")) {
                 embedBuilder.setTitle("CULPADO!⚖️");
-                embedBuilder.setImage(Image.getRandomMeme());
+                embedBuilder.setImage(Image.getRandomImage());
                 embedBuilder.setColor(Color.DARK_GRAY);
                 event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
 

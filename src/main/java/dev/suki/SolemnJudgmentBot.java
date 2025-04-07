@@ -15,7 +15,7 @@ public class SolemnJudgmentBot {
             var Jda = JDABuilder.createDefault(TOKEN)
                     //permissão do Gateway do Dicord para ler msg
                     .enableIntents(net.dv8tion.jda.api.requests.GatewayIntent.MESSAGE_CONTENT)
-                    .addEventListeners(new SlashCommandListener(),new CommandListener())
+                    .addEventListeners(new SlashCommandListener(),new CommandListener(), new AdmCommandListener())
                     .build()
                     .awaitReady();
             //Upa os comandos de "slash" para o discord
